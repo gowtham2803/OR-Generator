@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QR Code Generator</title>
+  <link rel="stylesheet" href="QR Code Style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <h1>✨ QR Code Generator</h1>
+      <p>Create, preview, and download QR codes instantly</p>
+    </header>
+
+    <main>
+      <input type="text" id="qrInput" placeholder="Enter URL or Text here" />
+      <button onclick="generateQR()">Generate QR Code</button>
+
+      <div id="qrBox">
+        <div id="qrOutput"></div>
+        <button id="downloadBtn" style="display:none;">Download QR</button>
+      </div>
+    </main>
+
+    <footer>
+      <p>Made 😎 by Gowtham Stark</p>
+    </footer>
+  </div>
+
+</body>
+<script>
+  
+  let qr;
+
+function generateQR() {
+  const input = document.getElementById("qrInput").value.trim();
+  const qrOutput = document.getElementById("qrOutput");
+  const downloadBtn = document.getElementById("downloadBtn");
+
+  qrOutput.innerHTML = "";
+  downloadBtn.style.display = "none";
+
+  if (!input) {
+    alert("Please enter some text or a URL!");
+    return;
+  }
+  const checkurl = /^(https?:\/\/)?([\w-]+\.)+[\w-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/.test(input);
+  const checktext = input.split(/\s+/).length >= 3;
+
+  if (!checkurl && !checktext) {
+    alert("Please enter a valid URL or meaningful text (at least 3 words)!");
+    return;
+  }
+
+  qr = new QRCode(qrOutput, {
+    text: input,
+    width: 200,
+    height: 200,
+    colorDark : "#000000",
+    colorLight : "#ffffff",
+    correctLevel : QRCode.CorrectLevel.H
+  });
+
+  setTimeout(() => {
+    const img = qrOutput.querySelector("img");
+    if (img) {
+      downloadBtn.style.display = "inline-block";
+      downloadBtn.onclick = () => {
+        const link = document.createElement('a');
+        link.href = img.src;
+        link.download = "qrcode.png";
+        link.click();
+      };
+    }
+  },300);
+}
+</script>
+</html>
